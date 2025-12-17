@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>helper</title>
+<script>
+const u = decodeURIComponent(location.hash.slice(1));
+if (u.startsWith("http")) location.replace(u);
+</script>
+</head>
+<body></body>
+</html>
