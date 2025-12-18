@@ -1,12 +1,43 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-<meta charset="utf-8">
-<title>helper</title>
-<script>
-const u = decodeURIComponent(location.hash.slice(1));
-if (u.startsWith("http")) location.replace(u);
-</script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mis Saldos Kolotibablo</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; background: #121212; color: #e0e0e0; max-width: 600px; margin: auto; }
+    h1 { text-align: center; color: #4caf50; }
+    .saldo { background: #1e1e1e; padding: 12px; margin: 10px 0; border-radius: 8px; border-left: 4px solid #4caf50; }
+    #total { font-size: 32px; font-weight: bold; text-align: center; color: #4caf50; margin-top: 30px; }
+  </style>
 </head>
-<body></body>
+<body>
+  <h1>Mis Saldos Kolotibablo</h1>
+  <div id="lista"></div>
+  <h2 id="total">Total: $0.0000</h2>
+
+  <script>
+    async function cargarSaldos() {
+      try {
+        const res = await fetch('https://raw.githubusercontent.com/nelsonmercedescastillo-svg/koloti-helper/main/saldos.json');
+        const data = await res.json();
+        
+        let total = 0;
+        let html = '';
+        data.saldos.forEach(s => {
+          total += s.monto;
+          html += `<div class="saldo"><strong>${s.perfil}</strong>: $${s.monto.toFixed(4)} <br><small>${s.fecha}</small></div>`;
+        });
+        
+        document.getElementById('lista').innerHTML = html || '<p style="text-align:center;">Aún no hay saldos enviados</p>';
+        document.getElementById('total').innerText = 'Total: $' + total.toFixed(4);
+      } catch(e) {
+        document.getElementById('lista').innerHTML = '<p style="text-align:center;color:#f88;">Error cargando saldos.json<br>Asegúrate de que el archivo exista</p>';
+      }
+    }
+
+    cargarSaldos();
+    setInterval(cargarSaldos, 10000); // recarga cada 10 segundos
+  </script>
+</body>
 </html>
